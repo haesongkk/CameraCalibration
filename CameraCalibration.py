@@ -49,16 +49,21 @@ while cap.isOpened():
 cap.release()
 cv2.destroyAllWindows()
 
-# 캘리브레이션 수행
 if len(objpoints) > 0:
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(
         objpoints, imgpoints, gray.shape[::-1], None, None
     )
 
-    print("\n=== Calibration Results ===")
-    print("Camera Matrix:\n", mtx)
-    print("Distortion Coefficients:\n", dist)
-    print("Reprojection Error:", ret)
+    fx = mtx[0, 0]
+    fy = mtx[1, 1]
+    cx = mtx[0, 2]
+    cy = mtx[1, 2]
 
+    print("\n=== Calibration Results ===")
+    print(f"Reprojection RMSE: {ret:.6f}")
+    print(f"Focal Length (fx, fy): {fx:.6f}, {fy:.6f}")
+    print(f"Principal Point (cx, cy): {cx:.6f}, {cy:.6f}")
+    print("Camera Matrix:\n", mtx)
+    print("Distortion Coefficients (k1, k2, p1, p2, k3, ...):\n", dist.ravel())
 else:
     print("❌ No valid checkerboard frames found.")
